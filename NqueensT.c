@@ -4,10 +4,10 @@
 #include <math.h>
 #include <pthread.h>
 
-//#define NUM_THREADS 4
+#define NUM_THREADS 4
 //#define NUM_THREADS 3
 //#define NUM_THREADS 2
-#define NUM_THREADS 1
+//#define NUM_THREADS 1
 
 pthread_mutex_t print_lock; // Mutex for safe printing :)
 
@@ -19,6 +19,7 @@ typedef struct {
     int end_row;
 } ThreadData;
 
+// Check if it is safe to place the queen
 bool isSafe(int board[], int row, int col, int n) {
     for (int i = 0; i < col; i++) {
         if (board[i] == row || abs(board[i] - row) == abs(i - col)) {
@@ -28,6 +29,7 @@ bool isSafe(int board[], int row, int col, int n) {
     return true;
 }
 
+//print the placed queen
 void solveNQueensUtil(int board[], int col, int n) {
     if (col >= n) {
         pthread_mutex_lock(&print_lock);
@@ -47,6 +49,7 @@ void solveNQueensUtil(int board[], int col, int n) {
     }
 }
 
+//Handle multiple rows in parallel
 void* solveNQueensParallel(void* arg) {
     ThreadData* data = (ThreadData*)arg;
     int* board = data->board;
@@ -75,7 +78,7 @@ void* solveNQueensParallel(void* arg) {
 }
 
 int main() {
-    int n = 7;
+    int n = 15;
     pthread_t threads[NUM_THREADS];
     ThreadData thread_data[NUM_THREADS];
 
